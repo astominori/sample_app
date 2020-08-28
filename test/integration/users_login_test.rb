@@ -51,4 +51,17 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     log_in_as(@user,remember_me: '0')
     assert_empty cookies['remember_token']
   end
+  
+  test "login with forwarding" do
+    #forwarding_urlを設定する
+    get edit_user_path(@user)
+    #ログインする
+    log_in_as(@user)
+    #forwarding_urlの先にリダイレクト
+    assert_redirected_to edit_user_path(@user)
+    #ログインを削除
+    delete logout_path
+    #forwarding_urlがdeleteされていることを確認する
+    assert !session[:forwarding_url]
+  end
 end
